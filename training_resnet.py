@@ -11,8 +11,6 @@ RESNET for MNIST
 import tensorflow as tf
 import numpy as np
 import pandas as pd
-import skimage.io
-import skimage.transform
 import os
 import resnet_model
 import sys
@@ -27,7 +25,7 @@ tf.set_random_seed(777)
 mnist = input_data.read_data_sets("./data", one_hot=True)
 
 # dataset_path = '../../01.dataset_local/ANTsBMLabel_train' #cifar_b_all' #bm_gtcc1'
-pretrained_model_path = './model/mnist_small1/resnet-model-5'#'./model/resnet-model-11' #None #'./model_tf/resnet-model-1' 
+pretrained_model_path = './model/mnist_small1/resnet-model-7'#'./model/resnet-model-11' #None #'./model_tf/resnet-model-1' 
 # FileType = '.png' #'png'
 
 ### output path
