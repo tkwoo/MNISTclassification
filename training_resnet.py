@@ -25,24 +25,24 @@ tf.set_random_seed(777)
 mnist = input_data.read_data_sets("./data", one_hot=True)
 
 # dataset_path = '../../01.dataset_local/ANTsBMLabel_train' #cifar_b_all' #bm_gtcc1'
-pretrained_model_path = './model/mnist_small1/resnet-model-7'#'./model/resnet-model-11' #None #'./model_tf/resnet-model-1' 
+pretrained_model_path = None#'./model/mnist_small1/resnet-model-2'
 # FileType = '.png' #'png'
 
 ### output path
 model_name = "resnet-model"
-saver_model_path = './model/mnist_small/' + model_name
-log_path_tb = './logs/mnist_small/' + model_name
+saver_model_path = './model/mnist_small_non/' + model_name
+log_path_tb = './logs/mnist_small_non/' + model_name
 val_log_txt_path = './log.tmp.txt'
 
 ### hyperparameter for network
-batch_size = 100
-init_learning_rate = 0.00005   #AdamOptimizer is used. GAP0.00007
+batch_size = 300
+init_learning_rate = 0.003   #AdamOptimizer is used. GAP0.00007
 # 10 epoch -> 0.345
-n_epochs = 50 # when learning rate decay is 0.9, epoch 50 -> init learning rate/200
+n_epochs = 30 # when learning rate decay is 0.9, epoch 50 -> init learning rate/200
 weight_decay_rate = 0.0005
 n_valsetsize_per_class = 10
 num_classes = 10
-lr_decay = 0.30
+lr_decay = 0.5
 init_optimizers = 'adam'
 
 ### log file open
@@ -149,26 +149,26 @@ with tf.device('/gpu:0'):
 
             iterations += 1
         
-        ### validation
-        n_correct = 0
-        n_data = 0
+        # ### validation
+        # n_correct = 0
+        # n_data = 0
         
-        test_precision_val = sess.run(
-                precision,
-                feed_dict={X: mnist.test.images, labels_tf: mnist.test.labels, train_mode: False}
-                )
+        # test_precision_val = sess.run(
+        #         precision,
+        #         feed_dict={X: mnist.test.images, labels_tf: mnist.test.labels, train_mode: False}
+        #         )
         
-        acc_all = test_precision_val
-        #print (label_predictions)
+        # acc_all = test_precision_val
+        # #print (label_predictions)
         
-        # n_correct += acc
-        # n_data += len(current_data)
+        # # n_correct += acc
+        # # n_data += len(current_data)
         
-        # acc_all = n_correct / float(n_data)
-        f_log.write('iter:'+str(iterations-1)+'\tepoch:'+str(epoch)+'\tacc:'+str(acc_all)+'\n')
-        print ("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-        print ('epoch:'+str(epoch)+'\tacc:'+str(acc_all))
-        print ("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+        # # acc_all = n_correct / float(n_data)
+        # f_log.write('iter:'+str(iterations-1)+'\tepoch:'+str(epoch)+'\tacc:'+str(acc_all)+'\n')
+        # print ("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+        # print ('epoch:'+str(epoch)+'\tacc:'+str(acc_all))
+        # print ("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
 
         # save_path = saver.save(sess, saver_model_path+str(epoch)+'.ckpt')
         save_path = saver.save(sess, saver_model_path, global_step=epoch)

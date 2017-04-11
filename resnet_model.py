@@ -119,14 +119,15 @@ class ResNet(object):
       logits = self._fully_connected(x, self.hps.num_classes)
       self.predictions = tf.nn.softmax(logits)
     
-    if self.mode == 'train':
-      with tf.variable_scope('costs'):
-        xent = tf.nn.softmax_cross_entropy_with_logits(
-            logits=logits, labels=self.labels)
-        self.cost = tf.reduce_mean(xent, name='xent')
-        self.cost += self._decay()
+    ### temp
+    # if self.mode == 'train':
+    with tf.variable_scope('costs'):
+      xent = tf.nn.softmax_cross_entropy_with_logits(
+          logits=logits, labels=self.labels)
+      self.cost = tf.reduce_mean(xent, name='xent')
+      self.cost += self._decay()
 
-        tf.summary.scalar('cost', self.cost)
+      tf.summary.scalar('cost', self.cost)
 
   def _build_train_op(self):
     """Build training specific ops for the graph."""
