@@ -13,11 +13,7 @@ import numpy as np
 import pandas as pd
 import os
 import resnet_model
-import sys
-import random
 import time
-import cv2
-import matplotlib.pyplot as plt
 from tensorflow.examples.tutorials.mnist import input_data
 
 img_size = 28
