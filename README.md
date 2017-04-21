@@ -48,6 +48,8 @@ code : https://github.com/tensorflow/models/tree/master/resnet
 
   
 **Author**
+>tkwoo  
+  
 > _             _____   _  __   __        __          
 >| |__  _   _  |_   _| | |/ /   \ \      / /__   ___  
 >| '_ \| | | |   | |   | ' /     \ \ /\ / / _ \ / _ \ 
