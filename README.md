@@ -1,5 +1,5 @@
 # MNIST Challenge 2017 by TF Kr
-MNIST classification using resnet network
+MNIST classification using residual network
 
 ### Result
 ![result](./result/mnist_result.png)
