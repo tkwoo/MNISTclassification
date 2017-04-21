@@ -13,13 +13,6 @@
 # limitations under the License.
 # ==============================================================================
 
-"""ResNet model.
-
-Related papers:
-https://arxiv.org/pdf/1603.05027v2.pdf
-https://arxiv.org/pdf/1512.03385v1.pdf
-https://arxiv.org/pdf/1605.07146v1.pdf
-"""
 from collections import namedtuple
 
 import numpy as np
@@ -80,13 +73,6 @@ class ResNet(object):
     else:
       res_func = self._residual
       filters = [16, 32, 64, 128]
-      # filters = [16, 16, 32, 64]
-      # Uncomment the following codes to use w28-10 wide residual network.
-      # It is more memory efficient than very deep residual network and has
-      # comparably good performance.
-      # https://arxiv.org/pdf/1605.07146v1.pdf
-      # filters = [16, 160, 320, 640]
-      # Update hps.num_residual_units to 9
 
     with tf.variable_scope('unit_1_0'):
       x = res_func(x, filters[0], filters[1], self._stride_arr(strides[0]),
@@ -214,24 +200,6 @@ class ResNet(object):
     with tf.variable_scope('sub1'):
       x = self._conv('conv1', x, 3, in_filter, out_filter, stride)
 
-    # visualizing first cnn weights
-    # alexnet : alexnet_v2/conv1
-    # resnet: resnet_v2_152/conv1
-    # inception_resnet_v2: InceptionResnetV2/Conv2d_1a_3x3
-    # with tf.variable_scope('resnet_v2_152/conv1', reuse=True):
-    #   # get first weights
-    #   weights = tf.get_variable('weights')
-
-    #   # change weights values to image color
-    #   x_min = tf.reduce_min(weights)
-    #   x_max = tf.reduce_max(weights)
-    #   weights_0_to_1 = (weights - x_min) / (x_max - x_min)
-    #   weights_0_to_255_uint8 = tf.image.convert_image_dtype(weights_0_to_1, dtype=tf.uint8)
-
-    #   weights_transposed = tf.transpose(weights_0_to_255_uint8, [3, 0, 1, 2])
-
-    #   tf.summary.image('conv1/filters', weights_transposed, max_outputs=100)
-
     with tf.variable_scope('sub2'):
       x = self._batch_norm('bn2', x)
       x = self._relu(x, self.hps.relu_leakiness)
@@ -289,7 +257,6 @@ class ResNet(object):
     for var in tf.trainable_variables():
       if var.op.name.find(r'DW') > 0:
         costs.append(tf.nn.l2_loss(var))
-        # tf.histogram_summary(var.op.name, var)
 
     return tf.multiply(self.hps.weight_decay_rate, tf.add_n(costs))
 
@@ -309,13 +276,10 @@ class ResNet(object):
 
   def _fully_connected(self, x, out_dim):
     """FullyConnected layer for final output."""
-    # x = tf.reshape(x, [self.hps.batch_size, -1])
     w = tf.get_variable(
         'DW', [x.get_shape()[1], out_dim],
         initializer=tf.uniform_unit_scaling_initializer(factor=1.0))
-    
-    # print w.get_shape()
-    
+
     b = tf.get_variable('biases', [out_dim],
                         initializer=tf.constant_initializer())
     return tf.nn.xw_plus_b(x, w, b)
@@ -323,27 +287,5 @@ class ResNet(object):
   def _global_avg_pool(self, x):
     assert x.get_shape().ndims == 4
     return tf.reduce_mean(x, [1, 2])
-  def get_classmap(self, label, last_conv, input_size=128):
-    last_conv_resized = tf.image.resize_bilinear(last_conv, [input_size, input_size])
-    channel =  int(last_conv.get_shape()[3])
-    with tf.variable_scope('logit', reuse=True):
-      # print tf.get_variable('DW').get_shape() # 256, 3
-      # print tf.get_variable('biases').get_shape() # 3, 
-      # print tf.transpose(tf.get_variable('DW')).get_shape() # 3, 256
-      # print label.get_shape() # ?,
-      label_b = tf.gather(tf.get_variable('biases'), label)
-      # print label_b.get_shape() # ?,
-      label_w = tf.gather(tf.transpose(tf.get_variable('DW')), label)
-      # print label_w.get_shape() # ?, 256
-      label_w = tf.reshape(label_w, [-1, channel, 1])
-      # print label_w.get_shape() # ?, 256, 1
-    last_conv_resized = tf.reshape(last_conv_resized, [-1, input_size*input_size, channel])
-    # print last_conv_resized.get_shape() # ?, 50176, 256
-    classmap = tf.nn.bias_add(tf.matmul(last_conv_resized, label_w), label_b)
-    # classmap = tf.nn.xw_plus_b(last_conv_resized, label_w, tf.gather(tf.get_variable('biases'), label))
-    # print classmap.get_shape() # ?, 50176, 256
-    classmap = tf.reshape(classmap, [-1, input_size, input_size])
-    # exit()
-    return classmap
 
 
