@@ -30,7 +30,7 @@ First, create checkpoint dir and download trained parameter files
             ├── resnet-model-xx.index
             └── ...
 
-You can download [**CHECKPOINT**](https://www.dropbox.com/s/7yn3jlvj5saywuy/mnist_weight.zip?dl=0) files
+You can download [**CHECKPOINT**](https://www.dropbox.com/s/7yn3jlvj5saywuy/mnist_weight.zip?dl=0) files (you don't need download. ckpt files were already included.)
   
 To test a model
     
